@@ -76,9 +76,12 @@ else:
 
         # if its not less than or greater than 36 then it must be equal to 36
         # in that case we have our saveing rate which is the mid point of the current range
-        # so we break
+        # #trying to add more granuality here to achieve 100$ threshold
         else:
-            break
+            if current_savings - portion_down_payment > 100:
+                range = (range[0], portion_saved)
+            else:
+                break
 
     print("-----------------------------------")
     print("Best savings rate:", range[0] + (range[1]-range[0])/2)
