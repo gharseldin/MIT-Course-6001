@@ -129,7 +129,40 @@ def hangman(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    guesses = 6
+    numOfLetters = len(secret_word)
+    letters_guessed = []
+
+    for i in range(6):
+        print("You have " + str(guesses) +
+              " guesses to know the word of length " + str(numOfLetters))
+        print("The following are remaining letters to guess from")
+        print(get_available_letters(letters_guessed))
+        char = input("Make a guess!")
+
+        # If the user does not supply a single character
+        if len(char) != 1:
+            print("User did not enter a single character!")
+            i -= 1  # to avoid counting this iteration
+            break
+        # If hte user does not supply a letter
+        if ord(char.lower) < ord('a') or ord(char.lower > ord('z')):
+            print("User did not enter a valid letter from the alphabet!")
+            i -= 1  # to avoid counting this iteration
+            break
+
+        # Check the guess
+        if char in secret_word:
+            letters_guessed.append(char)
+            print("Good Job!")
+            print(get_guessed_word(secret_word, letters_guessed))
+
+        if is_word_guessed(secret_word, letters_guessed):
+            print("You won!")
+
+        guesses -= 1
+        if guesses == 0:
+            print("You ran out of guesses. You lost!")
 
 
 # When you've completed your hangman function, scroll down to the bottom
