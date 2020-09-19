@@ -61,10 +61,8 @@ def is_word_guessed(secret_word, letters_guessed):
       False otherwise
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    if len(secret_word) != len(letters_guessed):
-        return False
-    for i in range(len(secret_word)):
-        if secret_word[i] != letters_guessed[i]:
+    for char in secret_word:
+        if not(char in letters_guessed):
             return False
     return True
 
@@ -132,38 +130,77 @@ def hangman(secret_word):
     guesses = 6
     numOfLetters = len(secret_word)
     letters_guessed = []
+    vowels = "aeiou"
+    warnings = 3
 
-    for i in range(6):
-        print("You have " + str(guesses) +
-              " guesses to know the word of length " + str(numOfLetters))
-        print("The following are remaining letters to guess from")
-        print(get_available_letters(letters_guessed))
-        char = input("Make a guess!")
-
+    print("Welcome to the game Hangman!")
+    print("I am thinking of a word that is "+str(numOfLetters)+" letters long")
+    print("---------------------------------------------------")
+    while(guesses != 0):
+        print("You have " + str(guesses) + " left")
+        print("You have " + str(warnings) + " warnings left")
+        print("Available letter: " + get_available_letters(letters_guessed))
+        char = input("Please guess a letter:")
         # If the user does not supply a single character
         if len(char) != 1:
             print("User did not enter a single character!")
-            i -= 1  # to avoid counting this iteration
-            break
+            warnings -= 1
+            if warnings == 0:
+                print("You lost the game for not following the rules")
+                return
+            guesses -= 1  # to avoid counting this iteration
+            continue
         # If hte user does not supply a letter
-        if ord(char.lower) < ord('a') or ord(char.lower > ord('z')):
+        if ord(char.lower()) < ord('a') or ord(char.lower()) > ord('z'):
             print("User did not enter a valid letter from the alphabet!")
-            i -= 1  # to avoid counting this iteration
-            break
+            warnings -= 1
+            if warnings == 0:
+                print("You lost the game for not following the rules")
+                return
+            guesses -= 1  # to avoid counting this iteration
+            continue
+
+        # If the letter was already guessed before
+        if char in letters_guessed:
+            if warnings == 0:
+                guesses -= 1
+                print("Oops! You've already guessed that letter. You now have " +
+                      str(guesses)+" guesses:")
+            else:
+                warnings -= 1
+                print(
+                    "Oops! You've already guessed that letter. You now have " + str(warnings) + " warnings:")
+            continue
 
         # Check the guess
+        letters_guessed.append(char)
         if char in secret_word:
-            letters_guessed.append(char)
-            print("Good Job!")
-            print(get_guessed_word(secret_word, letters_guessed))
+            print("Good guess: " + get_guessed_word(secret_word, letters_guessed))
+        else:
+            if char in vowels:
+                guesses -= 2
+            else:
+                guesses -= 1
+            print("Oops! That letter is not in my word: " +
+                  get_guessed_word(secret_word, letters_guessed))
+        print("---------------------------------------------------")
 
         if is_word_guessed(secret_word, letters_guessed):
-            print("You won!")
+            print("Congratulations, you won!")
+            print("Your total score for this game is : " +
+                  calculate_score(secret_word, guesses))
+            return
 
-        guesses -= 1
         if guesses == 0:
-            print("You ran out of guesses. You lost!")
+            print("Sorry, you ran out of guesses. The word was " + secret_word + ".")
 
+
+def calculate_score(secret_word, guesses):
+    distinctwords = set()
+    for char in secret_word:
+        distinctwords.add(char)
+    score = len(distinctwords) * guesses
+    return str(score)
 
 # When you've completed your hangman function, scroll down to the bottom
 # of the file and uncomment the first two lines to test
@@ -229,7 +266,8 @@ def hangman_with_hints(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    print(secret_word)
+    hangman(secret_word)
 
 
 # When you've completed your hangman_with_hint function, comment the two similar
@@ -246,7 +284,7 @@ if __name__ == "__main__":
     secret_word = choose_word(wordlist)
     hangman(secret_word)
 
-###############
+    ###############
 
     # To test part 3 re-comment out the above lines and
     # uncomment the following two lines.
