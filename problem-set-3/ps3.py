@@ -199,7 +199,7 @@ def update_hand(hand, word):
         if char in newHand:
             newHand[char] = newHand[char] - 1
             if newHand[char] == 0:
-                newHand.pop(char)
+                newHand.pop(char, None)
     return newHand
 
 #
