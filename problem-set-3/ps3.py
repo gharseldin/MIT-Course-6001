@@ -195,7 +195,8 @@ def update_hand(hand, word):
     """
 
     newHand = hand.copy()
-    for char in word.lower():
+    lowerWord = word
+    for char in lowerWord.lower():
         if char in newHand:
             newHand[char] = newHand[char] - 1
             if newHand[char] == 0:
@@ -219,7 +220,28 @@ def is_valid_word(word, hand, word_list):
     returns: boolean
     """
 
-    pass  # TO DO... Remove this line when you implement this function
+    # There are two checks here
+    # 1- if the letters are all in the hand
+    # 2- if the word is in the list
+    # I will create two separate simple functions for each
+    return is_word_in_hand(word, hand) and is_word_in_list(word, word_list)
+
+
+def is_word_in_hand(word, hand):
+    newHand = update_hand(hand, word)
+    return get_hand_size(newHand) == get_hand_size(hand)-len(word)
+
+
+def get_hand_size(hand):
+    size = 0
+    for key in hand.keys():
+        size += hand[key]
+    return size
+
+
+def is_word_in_list(word, word_list):
+    lowerWord = word
+    return lowerWord.lower() in word_list
 
 #
 # Problem #5: Playing a hand
